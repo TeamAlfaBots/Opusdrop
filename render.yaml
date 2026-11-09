@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: opusdrop
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r backend/requirements.txt && npm --prefix frontend install && npm --prefix frontend run build
+    startCommand: bash scripts/start.sh
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: NODE_VERSION
+        value: 22.11.0
+      - key: APP_ENV
+        value: production
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
