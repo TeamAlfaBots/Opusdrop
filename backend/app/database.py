@@ -46,6 +46,8 @@ class TursoHttp:
     """Minimal Turso/libSQL client over the Hrana-over-HTTP pipeline API (pure Python,
     stateless, so it suits serverless runtimes such as Vercel)."""
     def __init__(self, url: str, token: str, timeout: float):
+        url = url.strip(); token = token.strip()  # env vars pasted with a trailing newline/space are common
+        if "://" not in url: url = "https://" + url
         for a, b in (("libsql://", "https://"), ("wss://", "https://"), ("ws://", "http://")):
             if url.startswith(a): url = b + url[len(a):]; break
         self.endpoint = url.rstrip("/") + "/v2/pipeline"
@@ -83,7 +85,7 @@ class Database:
 
     async def connect(self):
         if self.ready: return
-        s = get_settings(); url = s.turso_database_url
+        s = get_settings(); url = s.turso_database_url.strip()
         local = url.startswith("file:") or url.endswith(".db")
         try:
             if local:
